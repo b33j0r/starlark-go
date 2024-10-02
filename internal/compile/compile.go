@@ -86,6 +86,7 @@ const (
 	CIRCUMFLEX
 	LTLT
 	GTGT
+	PIPELINE
 
 	IN
 
@@ -200,6 +201,7 @@ var opcodeNames = [...]string{
 	NOT:          "not",
 	PERCENT:      "percent",
 	PIPE:         "pipe",
+	PIPELINE:     "pipeline",
 	PLUS:         "plus",
 	POP:          "pop",
 	PREDECLARED:  "predeclared",
@@ -274,6 +276,7 @@ var stackEffect = [...]int8{
 	NOT:          0,
 	PERCENT:      -1,
 	PIPE:         -1,
+	PIPELINE:     -1,
 	PLUS:         -1,
 	POP:          -1,
 	PREDECLARED:  +1,
@@ -1642,6 +1645,8 @@ func (fcomp *fcomp) binop(pos syntax.Position, op syntax.Token) {
 		syntax.GE:
 		fcomp.emit(Opcode(op-syntax.EQL) + EQL)
 
+	case syntax.PIPELINE:
+		fcomp.emit(PIPELINE)
 	default:
 		log.Panicf("%s: unexpected binary op: %s", pos, op)
 	}

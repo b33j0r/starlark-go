@@ -97,7 +97,7 @@ const (
 	PASS
 	RETURN
 	WHILE
-
+	PIPELINE // |
 	maxToken
 )
 
@@ -788,6 +788,10 @@ start:
 		case '&':
 			return AMP
 		case '|':
+			if sc.peekRune() == '>' {
+				sc.readRune()
+				return PIPELINE
+			}
 			return PIPE
 		case '^':
 			return CIRCUMFLEX

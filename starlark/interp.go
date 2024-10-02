@@ -651,6 +651,34 @@ loop:
 			stack[sp] = Universe[f.Prog.Names[arg]]
 			sp++
 
+		case compile.PIPELINE:
+			// Retrieve the function (right-hand side) and input (left-hand side) from the stack
+			fn := stack[sp-1]
+			input := stack[sp-2]
+			sp -= 2
+
+			// Ensure the right-hand side is callable
+			callable, ok := fn.(Callable)
+			if !ok {
+				err = fmt.Errorf("right-hand side of pipeline is not callable")
+				break loop
+			}
+
+			// Prepare the arguments: input as a single positional argument
+			args := Tuple{input}
+			kwargs := []Tuple{}
+
+			// Perform the function call using the existing call infrastructure
+			result, err2 := callable.CallInternal(thread, args, kwargs)
+			if err2 != nil {
+				err = err2
+				break loop
+			}
+
+			// Push the result back onto the stack
+			stack[sp] = result
+			sp++
+
 		default:
 			err = fmt.Errorf("unimplemented: %s", op)
 			break loop
