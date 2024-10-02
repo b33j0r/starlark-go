@@ -802,14 +802,26 @@ func partial(thread *Thread, fn *Builtin, args Tuple, kwargs []Tuple) (Value, er
 		return nil, fmt.Errorf("partial: one function and at least one argument is required to bind")
 	}
 
-	var originalFn *Function = args[0].(*Function)
 	boundArgs := args[1:]
 
-	// Create and return the partialFunction
-	return &partialFunction{
-		original:  originalFn,
-		boundArgs: boundArgs,
-	}, nil
+	// Use a type switch to handle both *Function and *Builtin
+	switch original := args[0].(type) {
+	case *Function:
+		// Create and return the partialFunction for *Function
+		return &partialFunction{
+			original:  original,
+			boundArgs: boundArgs,
+		}, nil
+	case *Builtin:
+		// Create and return the partialFunction for *Builtin
+		return &partialFunction{
+			original:  original,
+			boundArgs: boundArgs,
+		}, nil
+	default:
+		// If it's neither, return an error
+		return nil, fmt.Errorf("partial: first argument must be a function or builtin, got %s", args[0].Type())
+	}
 }
 
 // https://github.com/google/starlark-go/blob/master/doc/spec.md#print
