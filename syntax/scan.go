@@ -97,7 +97,7 @@ const (
 	PASS
 	RETURN
 	WHILE
-	PIPELINE // |
+	PIPELINE // |>
 	maxToken
 )
 
@@ -180,6 +180,7 @@ var tokenNames = [...]string{
 	PASS:          "pass",
 	RETURN:        "return",
 	WHILE:         "while",
+	PIPELINE:      "|>",
 }
 
 // A FilePortion describes the content of a portion of a file.

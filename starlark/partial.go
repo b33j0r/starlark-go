@@ -39,7 +39,7 @@ func (p *partialFunction) Hash() (uint32, error) {
 
 // String returns the string representation.
 func (p *partialFunction) String() string {
-	return fmt.Sprintf("<partial_function of %s with boundArg=%s>", p.original.Name(), len(p.boundArgs))
+	return fmt.Sprintf("(partial Fn=%s)", p.original.Name())
 }
 
 // Attr returns the attribute of the value.
