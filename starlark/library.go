@@ -59,6 +59,7 @@ func init() {
 		"max":       NewBuiltin("max", minmax),
 		"min":       NewBuiltin("min", minmax),
 		"ord":       NewBuiltin("ord", ord),
+		"partial":   NewBuiltin("partial", partial),
 		"print":     NewBuiltin("print", print),
 		"range":     NewBuiltin("range", range_),
 		"repr":      NewBuiltin("repr", repr),
@@ -791,6 +792,35 @@ func ord(thread *Thread, _ *Builtin, args Tuple, kwargs []Tuple) (Value, error) 
 		return MakeInt(int(x[0])), nil
 	default:
 		return nil, fmt.Errorf("ord: got %s, want string or bytes", x.Type())
+	}
+}
+
+// partial is the built-in 'partial' function exposed to Starlark.
+func partial(thread *Thread, fn *Builtin, args Tuple, kwargs []Tuple) (Value, error) {
+	// Ensure at least one argument is provided to bind
+	if len(args) < 2 {
+		return nil, fmt.Errorf("partial: one function and at least one argument is required to bind")
+	}
+
+	boundArgs := args[1:]
+
+	// Use a type switch to handle both *Function and *Builtin
+	switch original := args[0].(type) {
+	case *Function:
+		// Create and return the partialFunction for *Function
+		return &partialFunction{
+			original:  original,
+			boundArgs: boundArgs,
+		}, nil
+	case *Builtin:
+		// Create and return the partialFunction for *Builtin
+		return &partialFunction{
+			original:  original,
+			boundArgs: boundArgs,
+		}, nil
+	default:
+		// If it's neither, return an error
+		return nil, fmt.Errorf("partial: first argument must be a function or builtin, got %s", args[0].Type())
 	}
 }
 

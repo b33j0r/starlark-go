@@ -658,6 +658,7 @@ var preclevels = [...][]Token{
 	{NOT},                                  // not (unary)
 	{EQL, NEQ, LT, GT, LE, GE, IN, NOT_IN}, // == != < > <= >= in not in
 	{PIPE},                                 // |
+	{PIPELINE},                             // |>
 	{CIRCUMFLEX},                           // ^
 	{AMP},                                  // &
 	{LTLT, GTGT},                           // << >>

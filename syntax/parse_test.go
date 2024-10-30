@@ -24,6 +24,11 @@ func TestExprParseTrees(t *testing.T) {
 	for _, test := range []struct {
 		input, want string
 	}{
+		{`x |> y`,
+			`(BinaryExpr X=x Op=|> Y=y)`},
+		{`x |> y |> z`,
+			`(BinaryExpr X=(BinaryExpr X=x Op=|> Y=y) Op=|> Y=z)`},
+		{`partial(f, x, y)`, `(CallExpr Fn=partial Args=(f x y))`},
 		{`print(1)`,
 			`(CallExpr Fn=print Args=(1))`},
 		{"print(1)\n",
